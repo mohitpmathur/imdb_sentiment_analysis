@@ -11,6 +11,7 @@ from keras.layers import Dense
 from keras.layers import Flatten
 from keras.layers import Embedding
 from keras.layers import Dropout
+from keras.layers import LSTM
 from keras.layers.convolutional import Conv1D
 from keras.layers.convolutional import MaxPooling1D
 from keras.preprocessing import sequence
@@ -57,6 +58,20 @@ def conv1D_model():
     print (model.summary())
     return model
 
+def LSTM_model():
+    # create LSTM model
+    model = Sequential()
+    model.add(Embedding(top_words, 32, input_length=max_words))
+    model.add(LSTM(100))
+    model.add(Dense(1, activation='sigmoid'))
+    model.compile(
+        loss='binary_crossentropy',
+        optimizer='adam',
+        metrics=['accuracy']
+    )
+    print (model.summary())
+    return model
+
 
 if __name__ == "__main__":
     seed = 42
@@ -82,7 +97,7 @@ if __name__ == "__main__":
 
     start = time.time()
     model = KerasClassifier(
-        build_fn=conv1D_model, 
+        build_fn=LSTM_model, 
         validation_data=(x_test, y_test),
         epochs=5, 
         batch_size=128, 
